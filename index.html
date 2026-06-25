@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#b04a2f">
+
+<title>Nyimbo Engine – Research Platform</title>
+
+<style>
+body { margin:0; font-family:system-ui; background:#faf7f2; }
+
+.tab-bar{
+  display:flex; flex-wrap:wrap;
+  gap:6px; padding:10px;
+  background:white; border-bottom:1px solid #ddd;
+}
+.tab-button{
+  padding:8px 10px;
+  border:none;
+  background:#ddd;
+  border-radius:6px;
+}
+.tab-button.active{ background:#b04a2f; color:white }
+
+.tab-panel{ display:none; padding:14px }
+
+textarea,input,select{
+  width:100%; padding:8px; margin:6px 0;
+}
+
+button.action{
+  width:100%; padding:10px;
+  background:#b04a2f; color:white;
+  border:none; border-radius:6px;
+}
+
+.output{
+  background:white;
+  border:1px solid #ddd;
+  padding:12px;
+  margin-top:10px;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="tab-bar">
+  <button class="tab-button active" data-tab="worked">Worked</button>
+  <button class="tab-button" data-tab="analyse">Analyse</button>
+  <button class="tab-button" data-tab="export">Export</button>
+</div>
+
+<!-- WORKED -->
+<section id="tab-worked" class="tab-panel" style="display:block;">
+<h2>Worked Examples</h2>
+
+<select id="hymnSelector"></select>
+<button class="action" id="loadWorked">Load Example</button>
+
+<div id="workedOutput" class="output"></div>
+</section>
+
+<!-- ANALYSE -->
+<section id="tab-analyse" class="tab-panel">
+<h2>Custom Analysis</h2>
+
+<textarea id="customText" rows="5" placeholder="Paste Kiambu dialect hymn text"></textarea>
+<button class="action" id="analyseCustom">Analyse</button>
+
+<div id="customOutput" class="output"></div>
+</section>
+
+<!-- EXPORT -->
+<section id="tab-export" class="tab-panel">
+<h2>Export & Install</h2>
+
+<button id="installApp" class="action">Install App</button>
+<button id="exportCorpus" class="action">Export Corpus</button>
+<button id="exportAlignment" class="action">Export Alignment</button>
+
+<div id="exportOutput" class="output"></div>
+</section>
+
+<script id="data" type="application/json">
+{
+  "vocab":{
+    "ngoro":{"literal":"heart"},
+    "thĩna":{"literal":"suffering"},
+    "kĩhoto":{"literal":"justice"},
+    "ũmenyo":{"literal":"illumination"},
+    "yakwa":{"literal":"my"},
+    "ĩrĩ":{"literal":"is"},
+    "na":{"literal":"with"},
+    "andũ":{"literal":"people"}
+  },
+  "hymns":[
+    {"number":3,"title":"Nyimbo 3","content":"Ngoro yakwa ĩrĩ na thĩna"},
+    {"number":5,"title":"Nyimbo 5","content":"Ngoro yakwa ĩrĩ na ũmenyo na kĩhoto"}
+  ]
+}
+</script>
+
+<script>
+
+/* ===== DATA ===== */
+
+const data = JSON.parse(document.getElementById("data").textContent)
+
+/* ===== DIALECT CONTROL ===== */
+
+const kiambuLexicon = Object.fromEntries(
+  Object.keys(data.vocab).map(k => [k,true])
+)
+
+function tokenize(t){
+  return t.toLowerCase().split(/\s+/).filter(Boolean)
+}
+
+function validateKiambu(text){
+  const tokens = tokenize(text)
+  const unknown = tokens.filter(t => !kiambuLexicon[t])
+  return { valid: unknown.length===0, unknown }
+}
+
+/* ===== TRANSLATION ENGINE ===== */
+
+function translate(text){
+  return tokenize(text).map(t =>
+    data.vocab[t]?.literal || `[${t}]`
+  ).join(" ")
+}
+
+function grammar(text){
+  let t = translate(text)
+  t = t.replace("heart my","my heart")
+  t = t.replace("is with","is in")
+  return t
+}
+
+function idiomatic(text){
+  let t = grammar(text)
+
+  if(t.includes("my heart is in suffering"))
+    return "my heart is burdened"
+
+  if(t.includes("my heart is in illumination"))
+    return "my heart is illumined"
+
+  return t
+}
+
+/* ===== THEOLOGY ===== */
+
+function buildTheologyPanel(text, tokens){
+
+  const panel = {
+    covenant:"",
+    christology:"",
+    pneumatology:"",
+    ecclesiology:"",
+    anti_colonial:"",
+    function:""
+  }
+
+  if(tokens.includes("kĩhoto"))
+    panel.covenant = "God’s justice defines covenant alignment."
+
+  if(tokens.includes("ũmenyo"))
+    panel.pneumatology = "Spirit acts as inner illumination."
+
+  if(tokens.includes("andũ"))
+    panel.ecclesiology = "Community is the site of divine action."
+
+  if(tokens.includes("thĩna"))
+    panel.anti_colonial = "Suffering interpreted as resistance, not abandonment."
+
+  if(tokens.includes("thĩna"))
+    panel.function = "Lament-turned-trust"
+  else if(tokens.includes("ũmenyo"))
+    panel.function = "Illumination hymn"
+  else
+    panel.function = "General worship"
+
+  return panel
+}
+
+function renderTheology(p){
+  return `
+    <h3>Theology Panel</h3>
+    <p><b>Covenant:</b> ${p.covenant||"-"}</p>
+    <p><b>Christology:</b> ${p.christology||"-"}</p>
+    <p><b>Pneumatology:</b> ${p.pneumatology||"-"}</p>
+    <p><b>Ecclesiology:</b> ${p.ecclesiology||"-"}</p>
+    <hr>
+    <p><b>Anti-Colonial:</b> ${p.anti_colonial||"-"}</p>
+    <p><b>Function:</b> ${p.function||"-"}</p>
+  `
+}
+
+/* ===== WORKED ===== */
+
+const hymnMap = Object.fromEntries(
+  data.hymns.map(h=>[h.number,h])
+)
+
+const sel = document.getElementById("hymnSelector")
+sel.innerHTML = data.hymns.map(h =>
+  `<option value="${h.number}">${h.title}</option>`
+).join("")
+
+document.getElementById("loadWorked").onclick = ()=>{
+  const h = hymnMap[sel.value]
+  const tokens = tokenize(h.content)
+  const t = idiomatic(h.content)
+  const theology = buildTheologyPanel(h.content,tokens)
+
+  document.getElementById("workedOutput").innerHTML = `
+    <h3>${h.title}</h3>
+    <p><b>Original:</b> ${h.content}</p>
+    <p><b>Translation:</b> ${t}</p>
+    ${renderTheology(theology)}
+  `
+}
+
+/* ===== ANALYSE ===== */
+
+document.getElementById("analyseCustom").onclick = ()=>{
+  const text = document.getElementById("customText").value
+  if(!text) return alert("Enter text")
+
+  const check = validateKiambu(text)
+
+  if(!check.valid){
+    document.getElementById("customOutput").innerHTML =
+      `<p style="color:red">Non‑Kiambu terms: ${check.unknown.join(", ")}</p>`
+    return
+  }
+
+  const tokens = tokenize(text)
+  const t = idiomatic(text)
+  const theology = buildTheologyPanel(text,tokens)
+
+  document.getElementById("customOutput").innerHTML = `
+    <p><b>Translation:</b> ${t}</p>
+    ${renderTheology(theology)}
+  `
+}
+
+/* ===== EXPORT ===== */
+
+function download(name, content){
+  const blob = new Blob([content])
+  const a = document.createElement("a")
+  a.href = URL.createObjectURL(blob)
+  a.download = name
+  a.click()
+}
+
+document.getElementById("exportCorpus").onclick=()=>{
+  const corpus = data.hymns.map(h=>({
+    original:h.content,
+    idiomatic:idiomatic(h.content)
+  }))
+  download("corpus.json", JSON.stringify(corpus,null,2))
+}
+
+document.getElementById("exportAlignment").onclick=()=>{
+  const rows=[]
+  data.hymns.forEach(h=>{
+    tokenize(h.content).forEach(tok=>{
+      rows.push({
+        hymn:h.number,
+        word:tok,
+        meaning:data.vocab[tok]?.literal||"?"
+      })
+    })
+  })
+  download("alignment.json", JSON.stringify(rows,null,2))
+}
+
+/* ===== INSTALL ===== */
+
+let deferredPrompt
+window.addEventListener("beforeinstallprompt", e=>{
+  e.preventDefault()
+  deferredPrompt = e
+})
+
+document.getElementById("installApp").onclick=async()=>{
+  if(!deferredPrompt) return alert("Install not ready yet")
+  deferredPrompt.prompt()
+  deferredPrompt=null
+}
+
+/* ===== TABS ===== */
+
+document.querySelectorAll(".tab-button").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none")
+    document.getElementById("tab-"+btn.dataset.tab).style.display="block"
+    document.querySelectorAll(".tab-button").forEach(b=>b.classList.remove("active"))
+    btn.classList.add("active")
+  }
+})
+
+/* ===== SERVICE WORKER ===== */
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js")
+}
+
