@@ -104,11 +104,19 @@ button.action{
 }
 </script>
 
-<script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 /* ===== DATA ===== */
 
-const data = JSON.parse(document.getElementById("data").textContent)
+let data = {};
+try {
+  const raw = document.getElementById("data").textContent;
+  data = JSON.parse(raw);
+  console.log("DATA OK", data);
+} catch (e) {
+  console.error("JSON FAIL:", e);
+}
 
 /* ===== DIALECT CONTROL ===== */
 
@@ -312,4 +320,7 @@ document.querySelectorAll(".tab-button").forEach(btn=>{
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js")
 }
-
+});
+</script>
+</body>
+</html>
