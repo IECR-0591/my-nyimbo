@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="akurinu hymn analysis for spirit-formation.">
+<link rel="icon" href="data:,">
+<link rel="canonical" href="https://enonyimbo.html">
+<title>Theological Anthropology – Social Equity & Justice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --bg: #faf7f2;
+    --panel: #ffffff;
+    --accent: #f0e7da;
+    --border: #cbbba3;
+    --text: #222222;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    max-width: 900px;      /* iPad-safe width */
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  h1 { font-size: 1.3rem; margin: 0 0 .5rem; }
+  h2 { font-size: 1.1rem; margin: .5rem 0; }
+  h3 { font-size: 1rem; margin: .4rem 0; }
+
+  label { display:block; margin-top:.5rem; font-size:.9rem; }
+
+  select, button, textarea, input {
+    font: inherit;
+    padding: .35rem .5rem;
+    margin-top: .25rem;
+    box-sizing: border-box;
+  }
+
+  select, input, textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  button {
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: #e3d4bd;
+    cursor: pointer;
+  }
+
+  button:active {
+    background: #d6c4aa;
+  }
+
+  .row {
+    display: flex;
+    gap: .5rem;
+    margin-top: .5rem;
+    flex-wrap: wrap;
+  }
+
+  .row > * {
+    flex: 1 1 150px;
+  }
+
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: .6rem 0;
+    background: var(--panel);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: .4rem .6rem;
+    background: var(--accent);
+  }
+
+  .panel-content {
+    padding: .5rem .7rem;
+  }
+
+  pre {
+    background: #f5f2ec;
+    padding: .5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  ol, ul { padding-left: 1.2rem; }
+
+  .small {
+    font-size: .8rem;
+    color: #555;
+  }
+
+  .pill {
+    display:inline-block;
+    padding:.1rem .4rem;
+    border-radius:999px;
+    background:#e8ddcf;
+    font-size:.75rem;
+    margin-right:.25rem;
+  }
+
+.section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 1rem 0;
+  background: var(--panel);
+}
+
+.section summary {
+  padding: .6rem;
+  font-weight: 600;
+  background: var(--accent);
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.section .section-body {
+  padding: .7rem;
+}
+
+.gikuyu-keyboard {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+}
+
+.gikuyu-keyboard button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Akurinu Hymn Automaton</h1>
+<p class="small">Single-file PWA • Offline • Vocab + Proverb engine • Custom text + vocab editing.</p>
+
+<!-- SECTION: Hymn Selection -->
+<details class="section" open>
+  <summary>Select Hymn / Item</summary>
+  <div class="section-body">
+
+    <label for="exampleSelect">Select hymn / item:</label>
+    <select id="exampleSelect">
+      <option value="5">Hymn 5 (demo)</option>
+      <option value="translation_process">Translation Process</option>
+      <option value="worked_example_template">Worked Example Template</option>
+    </select>
+
+    <div class="row">
+      <button id="showItem">Show Selected</button>
+      <button id="generateExample">Generate Worked Example (for hymn)</button>
+    </div>
+
+  </div>
+</details>
+
+<details class="section">
+  <summary>Proverb Viewer</summary>
+  <div class="section-body">
+
+    <label class="small">Proverb key (e.g. white_horse):</label>
+    <input id="proverbKeyInput" type="text" placeholder="white_horse">
+    <button id="showProverb">Show Proverb</button>
+
+    <div id="proverbView" class="small"></div>
+
+  </div>
+</details>
+
+
+<!-- SECTION: Custom Text -->
+<details class="section">
+  <summary>Custom Text Analysis</summary>
+  <div class="section-body">
+
+    <label for="customText">Custom text (paste hymn or lines here):</label>
+    <textarea id="customText" rows="4" placeholder="Paste Gĩkũyũ hymn text or lines here..."></textarea>
+
+    <div class="row">
+      <button id="analyseCustom">Analyse Custom Text</button>
+      <button id="generateCustomExample">Generate Worked Example</button>
+    </div>
+
+  </div>
+</details>
+
+<!-- SECTION: Vocab Tools -->
+<details class="section">
+  <summary>Vocab Tools</summary>
+  <div class="section-body">
+
+    <h3>Vocab Editor</h3>
+    <p class="small">Add or update key terms used by the automaton.</p>
+
+    <label for="vWord">Word:</label>
+    <input id="vWord" type="text" placeholder="ngoro">
+
+    <label for="vLiteral">Literal meaning:</label>
+    <input id="vLiteral" type="text" placeholder="heart">
+
+    <label for="vCosmo">Cosmological meaning:</label>
+    <input id="vCosmo" type="text" placeholder="moral centre / seat of divine illumination">
+
+    <label for="vNotes">Notes:</label>
+    <input id="vNotes" type="text" placeholder="Core of Akurinu heart theology.">
+
+    <button id="addVocab">Add / Update Vocab Entry</button>
+
+    <hr>
+
+    <label class="small">Import vocab CSV:</label>
+    <input id="vocabCSV" type="file" accept=".csv,text/csv">
+    <button id="importVocab">Import Vocab CSV</button>
+
+    <p class="small">Current vocab terms:</p>
+    <div id="vocabList" class="small"></div>
+
+  </div>
+</details>
+
+<!-- SECTION: Hymn Import -->
+<details class="section">
+  <summary>Import Hymns</summary>
+  <div class="section-body">
+
+    <label class="small">Import hymn text file:</label>
+    <input id="hymnFile" type="file" accept=".txt,text/plain">
+    <button id="importHymn">Import Hymn</button>
+
+    <p class="small">Format:</p>
+    <pre class="small">
+Number: 341
+Title: Kĩhoto Ririkanaga
+Content:
+Ngoro yakwa...
+    </pre>
+
+  </div>
+</details>
+
+<!-- SECTION: Output -->
+<details class="section" open>
+  <summary>Output</summary>
+  <div class="section-body">
+
+    <div id="exampleOutput"></div>
+
+  </div>
+</details>
+
+<!-- SECTION: Export Tools -->
+<details class="section">
+  <summary>Export Tools</summary>
+  <div class="section-body">
+
+    <label for="exportComment">Comment (optional):</label>
+    <textarea id="exportComment" rows="3" placeholder="Add a note, reflection, or context…"></textarea>
+
+    <div class="row">
+      <button id="copyOutput">Copy Output</button>
+      <button id="emailOutput">Email Output</button>
+    </div>
+
+    <div class="row">
+      <button id="downloadMD">Download as .md</button>
+      <button id="downloadJSON">Export JSON</button>
+      <button id="downloadCSV">Export Vocab CSV</button>
+      <button id="downloadState">Export Full State</button>
+    </div>
+
+  </div>
+</details>
+
+<!-- SECTION: Import Full State -->
+<details class="section">
+  <summary>Import Full State</summary>
+  <div class="section-body">
+
+    <label class="small">Import full state JSON:</label>
+    <input id="stateJSON" type="file" accept=".json">
+    <button id="importState">Import State</button>
+
+  </div>
+</details>
+
+<details class="section">
+  <summary>Import Proverbs</summary>
+  <div class="section-body">
+
+    <label class="small">Source name (e.g. okura, cagnolo, barra, oral):</label>
+    <input id="proverbSourceName" type="text" placeholder="okura">
+
+    <label class="small">Import proverbs file:</label>
+    <input id="proverbFile" type="file" accept=".txt,.md,text/plain">
+    <button id="importProverbs">Import Proverbs</button>
+
+    <p class="small">Format per block:</p>
+    <pre class="small">
+	Symbol: white horse
+	Text: ...
+	Notes: ...
+    </pre>
+
+  </div>
+</details>
+
+<details class="section">
+  <summary>Proverb Verification Dashboard</summary>
+  <div class="section-body">
+
+    <button id="runTriangulation">Recompute Confidence</button>
+    <div id="verificationList" class="small"></div>
+
+  </div>
+</details>
+
+<details class="section">
+  <summary>Imported vs Indigenous Terms</summary>
+  <div class="section-body">
+
+    <label class="small">Paste text to analyse:</label>
+    <textarea id="importedCheckText" rows="3"></textarea>
+
+    <button id="checkImportedTerms">Analyse Imported Terms</button>
+
+    <div id="importedTermsOutput" class="small"></div>
+
+  </div>
+</details>
+
+<details class="section">
+  <summary>Semantic Field Classifier</summary>
+  <div class="section-body">
+
+    <textarea id="semanticFieldInput" rows="3"
+      placeholder="Paste text to analyse…"></textarea>
+
+    <button id="runSemanticField">Analyse Semantic Fields</button>
+
+    <div id="semanticFieldOutput" class="small"></div>
+
+  </div>
+</details>
+
+
+<!-- SECTION: Search -->
+<details class="section">
+  <summary>Search Hymns</summary>
+  <div class="section-body">
+
+    <input id="searchHymns" type="text" placeholder="Search in hymn content…">
+    <div id="searchResults" class="small"></div>
+
+
+  <div id="gikuyuKeyboard" class="gikuyu-keyboard">
+    <button data-char="ĩ">ĩ</button>
+    <button data-char="ũ">ũ</button>
+    <button data-char="ā">ā</button>
+    <button data-char="ē">ē</button>
+    <button data-char="ō">ō</button>
+    <button data-char="ng’">ng’</button>
+  </div>
+  </div>
+</details>
+
+<!-- EMBEDDED DATA -->
+<script type="application/json" id="data">
+{
+
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Akurinu Hymn Translation Dataset",
+  "description": "Structured data for Akurinu hymn translation, vocabulary, proverbs, and worked examples.",
+
+  "translation_process": {
+    "type": "method",
+    "title": "Translation Process — Akurinu Hymnic Hermeneutics",
+    "steps": [
+      "1. Read the Gĩkũyũ line aloud to hear rhythm and emphasis.",
+      "2. Identify key theological terms (e.g., thĩna, ũtheru, kĩhoto).",
+      "3. Translate literally first — word-for-word.",
+      "4. Translate naturally — preserving meaning and tone.",
+      "5. Compare literal vs natural and choose the blend appropriate to the hymn.",
+      "6. Preserve metaphor, imagery, and covenant language.",
+      "7. Avoid Western theological categories unless the hymn itself uses them.",
+      "8. Keep Akurinu cosmology intact — ngoro, ũmenyo, ũthingu, etc.",
+      "9. Check for colonial-era double meanings (e.g., white horse, sickle, warriors).",
+      "10. Produce final translation with notes."
+    ],
+    "notes": "Ensures consistency and preserves Akurinu theological categories."
+  },
+
+  "worked_example_template": {
+    "type": "template",
+    "title": "Worked Example Template — Akurinu Hymn Analysis",
+    "sections": {
+      "1. Metadata": {
+        "date": "",
+        "hymn_number": "",
+        "title_gikuyu": "",
+        "title_english": "",
+        "analysis_version": "2.0 — Verb‑Aware + Contextual Theology Engine",
+        "linguistic_layers": [
+          "Tokenisation",
+          "Stanza segmentation",
+          "Vocabulary extraction",
+          "Proverb triangulation",
+          "Imported vocabulary detection",
+          "Indigenous idiom detection",
+          "Semantic field classification"
+        ],
+        "theological_layers": [
+          "Verb‑root expansion",
+          "Action‑mode classification",
+          "Love‑context detection",
+          "Spirit‑context detection",
+          "Ngoma‑context detection",
+          "Theological profile synthesis"
+        ]
+      },
+
+      "2. Contextual Frame": {
+	    "historical_context": "",
+	    "theological_context": "",
+	    "community_context": "",
+	    "ritual_context": "",
+	    "use_context": "",
+	    "embodied_context": ""
+	  },
+
+      "3. Text Block": {
+        "original_gikuyu": "",
+        "literal_translation": "",
+        "natural_translation": "",
+        "blended_translation": ""
+    },
+
+      "4. Theological Notes": {
+	    "covenant": "",
+	    "christology": "",
+	    "pneumatology": "",
+	    "ecclesiology": "",
+	    "faith_expression_context": ""
+	  },
+
+      "5. Anti-Colonial Reading": {
+        "inversions": "",
+        "survival_theology": "",
+        "political_silence": ""
+    },
+
+      "6. GUTAURA_Function": {
+	    "function": "",
+	    "explanation": "",
+	    "researcher_interpretation": ""
+	  },
+
+      "7. Vocabulary Index": {
+        "key_terms": []
+    },
+
+      "8. Imported Vocabulary": {
+        "biblical": [],
+        "colonial": [],
+        "swahili": [],
+        "english": [],
+        "missionary": []
+    },
+
+      "9. Colonial Metaphors": [],
+
+      "10. Biblical Allusions": [],
+
+      "11. Indigenous Idioms": [],
+
+      "12. Semantic Fields": {},
+
+      "13. Verb Patterns": [],
+
+      "14. Action Modes": {},
+
+      "15. Love / Relational Movement": [],
+
+      "16. Spirit Presence": [],
+
+      "17. Ngoma / Spiritual Dynamics": [],
+
+      "18. Theological Profile": {},
+
+      "19. GUTAURA Support": {}
+    },
+
+    "notes": "Use this template for every hymn to maintain consistency."
+  },
+
+  "verb_roots": {
+    "hoya": ["hoya", "hoy", "hoyag", "kuhoya", "guhoya"],
+    "heana": ["heana", "hean", "heanag", "kuheana"],
+    "honokio": ["honokio", "honok", "honokag", "kuhonokio"],
+    "thera": ["thera", "therag", "kuthera"],
+    "guciarua": ["ciarua", "ciaruag", "kuciarua"],
+    "gura": ["gura", "gurag", "kugura"],
+    "ria": ["ria", "riag", "kuria"],
+    "igua": ["igua", "iguag", "kuigua"],
+    "rugama": ["rugama", "rugam", "kurugama"]
+  },
+
+  "vocab": {
+    "ngoro": {
+      "literal": "heart",
+      "cosmological": "moral centre / seat of divine illumination",
+      "domain": "anthropology",
+      "notes": "Core of Akurinu heart theology."
+    },
+    "kĩhoto": {
+      "literal": "justice / righteousness",
+      "cosmological": "moral rightness aligned with divine order",
+      "domain": "ethics",
+      "notes": "Gravitational centre of the virtue constellation."
+    },
+    "ũmenyo": {
+      "literal": "illumination / light",
+      "cosmological": "clarity of moral and spiritual vision",
+      "domain": "epistemology",
+      "notes": "ngoro ĩhetwo ũmenyo — heart illuminated with divine clarity."
+    }
+  },
+
+  "proverb_lexicon": {
+    "ngoro ya mũndũ ndirĩ mũtĩ": {
+      "symbol": "ngoro ya mũndũ ndirĩ mũtĩ",
+      "meaning": "the human heart is not a tree (it bends, feels, breaks)",
+      "function": "moral psychology / emotional anthropology"
+    },
+    "mũndũ mũrũme ndarĩaga mũgogo": {
+      "symbol": "mũndũ mũrũme ndarĩaga mũgogo",
+      "meaning": "a mature person does not eat alone",
+      "function": "communal ethics / ubuntu"
+    }
+  },
+
+  "proverbs": {
+    "white_horse": {
+      "biblical": "Revelation 19 — Rider who judges and wages war in righteousness.",
+      "colonial": "District officer’s horse enforcing colonial authority.",
+      "akurinu": "Symbol of a different government — Christ overturning colonial rule.",
+      "function": "Anti-colonial inversion; eschatological justice image.",
+      "notes": "In Hymn 5, the white horse answers the Kipande system."
+    },
+    "sickle": {
+      "biblical": "Harvest and judgement imagery in apocalyptic texts.",
+      "colonial": "Figure for court verdicts and the cutting power of colonial law.",
+      "akurinu": "Reversal of colonial judgement; God’s sickle separates just from unjust.",
+      "function": "Judicial reversal; eschatological sorting.",
+      "notes": "In some hymns, the sickle replaces the magistrate’s pen."
+    }
+  },
+
+  "5": {
+    "type": "hymn",
+    "number": 5,
+    "title": "Nyimbo 5 (demo)",
+    "content": "Ngoro yakwa ĩhetwo ũmenyo, na kĩhoto kĩrĩa gĩkeno gĩakwa. Mũthamaki wa rũhuho akũrũga na mũthitho mũeru white horse na rũthingu rwa kĩhoto rũrĩa rũgũcokia thĩna wa andũ ake."
+  }
+}
+</script>
+<script>
+// ---------- DATA ----------
+const data = JSON.parse(document.getElementById("data").textContent);
+
+
+// ---------- PROVERB ENGINE BOOTSTRAP ----------
+
+	function ensureProverbEntry(symbol, data) {
+	  const key = symbol.replace(/\s+/g, "_").toLowerCase();
+	  if (!data.proverbs) data.proverbs = {};
+
+	  if (!data.proverbs[key]) {
+	    data.proverbs[key] = {
+	      symbol,
+	      sources: {},
+	      merged: {},
+	      verification: {
+	        triangulated: false,
+	        matched_sources: [],
+	        community_confirmed: false,
+	        confidence: "unknown"
+	      }
+	    };
+	  }
+	  return data.proverbs[key];
+}
+// ---------- NOW RUN BOOTSTRAP ----------
+// ✅ ADD THIS HERE (once, immediately after data is defined)
+if (data.proverb_lexicon) {
+  for (const key in data.proverb_lexicon) {
+    const p = data.proverb_lexicon[key];
+
+    const entry = ensureProverbEntry(p.symbol, data);
+
+    if (!entry.sources["lexicon"]) {
+      entry.sources["lexicon"] = [];
+    }
+
+    entry.sources["lexicon"].push({
+      text: p.meaning || "",
+      notes: p.function || "",
+      source: "lexicon",
+      confidence: "seed"
+    });
+  }
+}
+
+function triangulateProverb(entry) {
+  const sources = Object.keys(entry.sources);
+
+  // 1. Triangulation rule:
+  //    A proverb is "triangulated" if it appears in 2+ independent sources.
+  entry.verification.triangulated = sources.length >= 2;
+
+  // 2. Record which sources matched
+  entry.verification.matched_sources = sources;
+
+  // 3. Confidence scoring
+  if (sources.includes("hymn") && sources.includes("fuzzy")) {
+    entry.verification.confidence = "high";
+  } else if (sources.includes("hymn")) {
+    entry.verification.confidence = "medium";
+  } else if (sources.length > 0) {
+    entry.verification.confidence = "low";
+  } else {
+    entry.verification.confidence = "unknown";
+  }
+
+  return entry;
+}
+
+
+// ----EQUIVALENCE MAPS / ROOTS / SEMANTIC FIELDS / IDIOMS ----------
+data.gikuyu_equivalents = {
+  "i": ["i", "ĩ", "î", "í"],
+  "ĩ": ["i", "ĩ", "î", "í"],
+
+  "u": ["u", "ũ", "û", "ú"],
+  "ũ": ["u", "ũ", "û", "ú"],
+
+  "a": ["a", "ā", "á", "à"],
+  "ā": ["a", "ā", "á", "à"],
+
+  "e": ["e", "ē", "é", "è"],
+  "ē": ["e", "ē", "é", "è"],
+
+  "o": ["o", "ō", "ó", "ò"],
+  "ō": ["o", "ō", "ó", "ò"],
+
+  // nasal vowels
+  "ki": ["ki", "kĩ"],
+  "kĩ": ["ki", "kĩ"],
+
+  "gi": ["gi", "gĩ"],
+  "gĩ": ["gi", "gĩ"],
+
+  "mi": ["mi", "mĩ"],
+  "mĩ": ["mi", "mĩ"],
+
+  "mu": ["mu", "mũ"],
+  "mũ": ["mu", "mũ"],
+
+  "ni": ["ni", "nĩ"],
+  "nĩ": ["ni", "nĩ"]
+};
+
+data.gikuyu_roots = {
+  "hoto": ["kĩhoto", "ũhoro", "ũhoreri", "mũhoro"],
+  "ngoro": ["ngoro", "mũoyo", "mũtima"],
+  "theru": ["ũtheru", "kũgũra mũoyo"],
+  "iguano": ["ũiguano", "kũheana ũhoro"],
+  "thahu": ["thahu", "kũhũũrwo"],
+  "honok": ["kũhonokio", "mũkombozi"]
+};
+
+// ---------- SEMANTIC FIELDS (Indigenous + Biblical Justice) ----------
+data.semantic_fields = {
+
+  // 1. Ngoro‑Continuum: heart, moral centre, spirit-formation
+  ngoro: [
+    "ngoro","mũoyo","mũtima","kũheana ngoro","kũringa mũoyo",
+    "wendani","ũthingu","ũrathi","ũtugi"
+  ],
+
+  // 2. Kĩhoto‑Justice: tsedaqah + mishpat + right-relationship
+  kihoto: [
+    "kĩhoto","ũhoreri","ũtugi","wendani","ũrathi","ũthingu",
+    "kũheana ũhoro","kũgũra indo"
+  ],
+
+  // 3. Thayu‑Continuum: peace, reconciliation, harmony
+  thayu: [
+    "thayũ","ũiguano","kũhoya thayũ","kũheana ũhoro","kũrũgama mũciĩ"
+  ],
+
+  // 4. Gĩthaka‑Land: belonging, origin, sacred geography
+  githaka: [
+    "gĩthaka","kĩrĩma","mũgũnda","mũciĩ","gũciarwo kĩrĩma"
+  ],
+
+  // 5. Ūtheru‑Purity: moral cleansing, ritual repair
+  utheru: [
+    "ũtheru","kũgũra mũoyo","kũhoya ũtheru","thahu"
+  ],
+
+  // 6. Thahu‑Suffering: oppression, brokenness, burden
+  thahu: [
+    "thahu","kũhũũrwo","kũrĩrwo","ũrĩa"
+  ],
+
+  // 7. Kũhonokio‑Liberation: deliverance, restoration, hope
+  kuhonokio: [
+    "kũhonokio","mũkombozi","kũgũra indo","kũheana thayũ","mũrathime wa andũ"
+  ]
+};
+
+
+// ---------- IMPORTED VOCABULARY CLASSIFIER ----------
+data.imported_terms = {
+  biblical: [
+    "shepherd","flock","vineyard","vine","fig","kingdom","throne","crown",
+    "temple","altar","sacrifice","lamb","yoke","harvest","sickle","sword",
+    "armor","redeem","redeemer","salvation"
+  ],
+  colonial: [
+    "chief","permit","polisi","koti","baraza","tax","hut","crown land",
+    "government","district","officer","passbook","jail","court"
+  ],
+  swahili: [
+    "kitabu","shule","sabuni","dirisha","meza","kisu","saa","nguo","rafiki"
+  ],
+  english: [
+    "tractor","radio","table","window","school","book","money","train",
+    "station","doctor","hospital"
+  ],
+  missionary: [
+    "mũkombozi","mũhonokio","mũthĩnjĩri","mũthĩnjĩri-ngũo","ũtheru",
+    "mũrathime","mũthomeri","mũrutani"
+  ]
+};
+
+// ---------- INDIGENOUS IDIOM LIST ----------
+data.indigenous_idioms = [
+  // Heart / moral centre
+  "kũheana ngoro",       // give heart → trust
+  "kũringa mũoyo",       // harden heart → stubbornness
+  "kũheana ũhoro",       // give news → confess
+  "kũgũra indo",         // redeem → restore relationship
+
+  // Social harmony
+  "kũhoya thayũ",        // ask for peace
+  "kũrũgama mũciĩ",      // stand in the home → take responsibility
+  "kũhoya ũiguano",      // ask for reconciliation
+
+  // Land / belonging
+  "gũciarwo kĩrĩma",     // born of the mountain → indigenous belonging
+  "kũrĩa mũgũnda",       // eat from the land → livelihood
+
+  // Purity / ritual
+  "kũhoya ũtheru",       // ask for purity
+  "kũgũra mũoyo",        // cleanse the heart
+];
+
+// ---------- COLONIAL METAPHOR LIST ----------
+data.colonial_metaphors = [
+  "chief","permit","district officer","crown land","hut tax","passbook",
+  "police","court","jail","government","baraza"
+];
+
+// ---------- BIBLICAL ALLUSIONS ----------
+data.biblical_allusions = [
+  "zion","jerusalem","israel","moses","abraham","jordan","galilee",
+  "shepherd","vineyard","lamb","pharaoh","egypt","canaan","sabbath"
+];
+
+//  ------------------- END EQUIVALENC ------
+
+// ---------- LOCALSTORAGE LOAD ----------
+function loadStateFromLocalStorage() {
+  const saved = localStorage.getItem("nyimbo_state");
+  if (!saved) return;
+
+  try {
+    const parsed = JSON.parse(saved);
+
+    if (parsed.data) {
+      // merge vocab
+      if (parsed.data.vocab) {
+        Object.assign(data.vocab, parsed.data.vocab);
+      }
+      // merge hymns
+      for (const k in parsed.data) {
+        if (!["vocab","proverbs"].includes(k)) {
+          data[k] = parsed.data[k];
+        }
+      }
+    }
+
+    if (parsed.customText) {
+      document.getElementById("customText").value = parsed.customText;
+    }
+
+    if (parsed.comment) {
+      document.getElementById("exportComment").value = parsed.comment;
+    }
+
+  } catch (e) {
+    console.warn("Could not load saved state", e);
+  }
+}
+
+function detectImportedTerms(tokens, data) {
+  const result = {
+    biblical: [],
+    colonial: [],
+    swahili: [],
+    english: [],
+    missionary: []
+  };
+
+  tokens.forEach(token => {
+    for (const category in data.imported_terms) {
+      if (data.imported_terms[category].includes(token)) {
+        result[category].push(token);
+      }
+    }
+  });
+
+  return result;
+}
+
+// ---------- IMPORT HYMN FUNCTION ----------
+function importHymnHandler() {
+  const file = document.getElementById("hymnFile").files[0];
+  if (!file) {
+    alert("Choose a .txt file first.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+
+    // Parse simple format
+    const numMatch = text.match(/Number:\s*(\d+)/i);
+    const titleMatch = text.match(/Title:\s*(.+)/i);
+    const contentMatch = text.split(/Content:/i)[1];
+
+    if (!numMatch || !titleMatch || !contentMatch) {
+      alert("Invalid hymn format.");
+      return;
+    }
+
+    const number = numMatch[1].trim();
+    const title = titleMatch[1].trim();
+    const content = contentMatch.trim();
+
+    data[number] = {
+      type: "hymn",
+      number,
+      title,
+      content
+    };
+
+    alert(`Hymn ${number} imported.`);
+  };
+
+  reader.readAsText(file);
+}
+
+// ---------- IMPORT HYMN FUNCTION ----------
+function importProverbsHandler() {
+  const file = document.getElementById("proverbFile").files[0];
+  const sourceName = (document.getElementById("proverbSourceName").value || "unknown").trim().toLowerCase();
+  if (!file) {
+    alert("Choose a proverbs file first.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const blocks = text.split(/\n\s*\n/);
+
+    blocks.forEach(block => {
+      const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return;
+
+      const symbolLine = lines.find(l => /^Symbol:/i.test(l));
+      if (!symbolLine) return;
+
+      const symbol = symbolLine.replace(/Symbol:\s*/i, "").trim();
+      if (!symbol) return;
+
+
+	  const entryObj = ensureProverbEntry(symbol, data); // ✅ OK
+
+	  const key = symbol.replace(/\s+/g, "_").toLowerCase(); // ✅ explicit key
+
+      const entry = {
+        text: "",
+        notes: "",
+        source: sourceName,
+        confidence: "unknown"
+      };
+
+
+	lines.forEach(line => {
+        if (/^Text:/i.test(line)) {
+          entry.text = line.replace(/Text:\s*/i, "").trim();
+        }
+        if (/^Notes:/i.test(line)) {
+          entry.notes = line.replace(/Notes:\s*/i, "").trim();
+        }
+      });
+
+      if (!data.proverbs[key].sources[sourceName]) {
+        data.proverbs[key].sources[sourceName] = [];
+      }
+
+      data.proverbs[key].sources[sourceName].push(entry);
+    });
+
+	alert(`Proverbs imported for source: ${sourceName}`);
+	  };
+
+	  reader.readAsText(file);
+	}
+
+// ---------- ANALYSIS FUNCTIONS ----------
+
+// Orthographic equivalence
+function expandGikuyuEquivalents(query) {
+  let expansions = new Set([query]);
+
+  for (const key in data.gikuyu_equivalents) {
+    if (query.includes(key)) {
+      data.gikuyu_equivalents[key].forEach(eq => {
+        expansions.add(query.replace(key, eq));
+      });
+    }
+  }
+
+  return Array.from(expansions);
+}
+
+// ---- Root-based expansion ------
+function expandRoots(query) {
+  let expansions = [query];
+  for (const root in data.gikuyu_roots) {
+    if (query.includes(root)) {
+      expansions = expansions.concat(data.gikuyu_roots[root]);
+    }
+  }
+  return expansions;
+}
+
+// -------- Semantic expansion ------
+function expandSemantic(query) {
+  const out = [];
+  for (const field in data.semantic_fields) {
+    if (field.includes(query) || data.semantic_fields[field].includes(query)) {
+      out.push(...data.semantic_fields[field]);
+    }
+  }
+  return out;
+}
+
+// ------ Idiom expansion ------
+function expandIdioms(query) {
+  return data.indigenous_idioms.filter(idiom =>
+    idiom.toLowerCase().includes(query)
+  );
+}
+
+// ---------- TEXT ANALYSIS ENGINE ----------
+function tokenize(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^\wĩĩũũáéíóúâêîôû]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function extractVocab(tokens, data) {
+  const found = {};
+  tokens.forEach(t => {
+    if (data.vocab && data.vocab[t]) {
+      found[t] = data.vocab[t];
+    }
+  });
+  return found;
+}
+
+function extractProverbs(text, data) {
+  const found = {};
+  if (!data.proverbs) return found;
+
+  const lower = (text || "").toLowerCase();
+
+  for (const key in data.proverbs) {
+    const entry = data.proverbs[key];
+
+    // ✅ HARD SAFETY GUARD
+    if (!entry || typeof entry.symbol !== "string") continue;
+
+    const symbol = entry.symbol.toLowerCase();
+
+    if (lower.includes(symbol)) {
+
+      if (!entry.sources["hymn"]) {
+        entry.sources["hymn"] = [];
+      }
+
+      // ✅ prevent duplicates
+      const exists = entry.sources["hymn"].some(e => e.text === symbol);
+
+      if (!exists) {
+        entry.sources["hymn"].push({
+          text: symbol,
+          notes: "Detected in analysed text",
+          source: "hymn",
+          confidence: "dynamic"
+        });
+      }
+
+      found[key] = entry;
+    }
+  }
+
+  return found;
+}
+
+function analyseHymnLike(text, data) {
+  const tokens = tokenize(text || "");
+
+  // --- Core linguistic layers ---
+  const vocab = extractVocab(tokens, data);
+  const proverbs = extractProverbs(text || "", data);
+  const imports = detectImportedTerms(tokens, data);
+  const idioms = detectIndigenousIdioms(text || "");
+  const colonial_metaphors = detectColonialMetaphors(text || "");
+  const biblical_allusions = detectBiblicalAllusions(text || "");
+  const semantic = classifySemanticFields(tokens, data);
+
+  // --- Verb-aware engine ---
+  const verbHits = expandVerbRoots(tokens, data);
+  const action_modes = classifyActionModes(verbHits);
+
+  // --- Contextual detectors ---
+  const love_context = detectLoveContext(text, tokens, verbHits, semantic);
+  const spirit_context = detectSpiritContext(text, tokens, verbHits, semantic);
+  const ngoma_context = detectNgomaContext(text, tokens, verbHits, semantic);
+
+  // --- Theological profile ---
+  const theological_profile = buildTheologicalProfile({
+    action_modes,
+    spirit_context,
+    ngoma_context,
+    love_context,
+    semantic
+  });
+
+  function buildGutauraSupport(analysis) {
+    const support = {
+      revelation_signals: [],
+      forsakenness_signals: [],
+      ascent_signals: [],
+      pain_joy_signals: [],
+      summary: ""
+    };
+
+    // --- Revelation ---
+    if (analysis.spirit_context?.length) {
+      support.revelation_signals.push("Spirit presence (roho, mwaki, heho)");
+    }
+    if (analysis.action_modes?.proclamation?.length) {
+      support.revelation_signals.push("Proclamation verbs (ũhoro‑continuum)");
+    }
+
+    // --- Forsakenness ---
+    if (analysis.semantic?.thahu?.length) {
+      support.forsakenness_signals.push("Thahu / burden / pollution");
+    }
+    if (analysis.ngoma_context?.some(s => s.signals.includes("ngoma + thahu"))) {
+      support.forsakenness_signals.push("Ngoma‑thahu tension");
+    }
+
+    // --- Ascent ---
+    if (analysis.action_modes?.liberation?.length) {
+      support.ascent_signals.push("Liberation verbs (honokio‑continuum)");
+    }
+    if (analysis.action_modes?.covenant_exchange?.length) {
+      support.ascent_signals.push("Covenant exchange (heana‑family)");
+    }
+
+    // --- Pain & Joy ---
+    if (analysis.ngoma_context?.length) {
+      support.pain_joy_signals.push("Ngoma dynamics (ecstatic / contested)");
+    }
+    if (analysis.action_modes?.praise?.length) {
+      support.pain_joy_signals.push("Praise verbs (rĩa‑family)");
+    }
+
+    // --- Summary ---
+    const parts = [];
+    if (support.revelation_signals.length) parts.push("Revelation movement detected");
+    if (support.forsakenness_signals.length) parts.push("Forsakenness movement detected");
+    if (support.ascent_signals.length) parts.push("Ascent movement detected");
+    if (support.pain_joy_signals.length) parts.push("Pain & Joy movement detected");
+
+    support.summary = parts.join(". ");
+
+    return support;
+  }
+
+  // --- GŨTAŨRA Support ---
+  const gutaura_support = buildGutauraSupport({
+    action_modes,
+    semantic,
+    spirit_context,
+    ngoma_context
+  });
+
+  // --- Return full analysis object ---
+  return {
+    vocab,
+    proverbs,
+    imports,
+    idioms,
+    semantic,
+    verbs: verbHits,
+    action_modes,
+    love_context,
+    spirit_context,
+    ngoma_context,
+    theological_profile,
+    gutaura_support,
+    colonial_metaphors,
+    biblical_allusions
+  };
+}
+
+document.getElementById("runTriangulation").addEventListener("click", () => {
+  triangulateAllProverbs();
+  renderVerificationDashboard();
+});
+
+function classifySemanticFields(tokens, data) {
+  const result = {};
+
+  for (const field in data.semantic_fields) {
+    result[field] = data.semantic_fields[field].filter(term =>
+      tokens.includes(term.toLowerCase())
+    );
+  }
+
+  return result;
+}
+
+function expandVerbRoots(tokens, data) {
+  const results = [];
+
+  tokens.forEach(token => {
+    const lower = token.toLowerCase();
+
+    for (const root in data.verb_roots) {
+      const forms = data.verb_roots[root];
+
+      if (forms.some(f => lower.startsWith(f))) {
+        results.push({
+          token,
+          stem: forms[0],
+          root
+        });
+      }
+    }
+  });
+
+  return results;
+}
+
+function classifyActionModes(verbHits) {
+  const modes = {
+    petition: [],
+    covenant_exchange: [],
+    purification: [],
+    liberation: [],
+    proclamation: [],
+    praise: []
+  };
+
+  verbHits.forEach(v => {
+    switch (v.root) {
+      case "hoya":
+        modes.petition.push(v.token);
+        break;
+      case "heana":
+        modes.covenant_exchange.push(v.token);
+        break;
+      case "guciarua":
+      case "thera":
+        modes.purification.push(v.token);
+        break;
+      case "honokio":
+        modes.liberation.push(v.token);
+        break;
+      case "ria":
+        modes.praise.push(v.token);
+        break;
+      case "igua":
+        modes.proclamation.push(v.token);
+        break;
+    }
+  });
+
+  return modes;
+}
+
+function detectLoveContext(text, tokens, verbHits, semantic) {
+  const stanzas = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  const results = [];
+
+  const loveSignals = ["ngoro", "mũoyo", "ũiguano", "thayũ", "ũtheru", "wendo"];
+  const loveVerbs = ["heana", "gura", "rugama", "hoya"];
+
+  stanzas.forEach((stanza, index) => {
+    const lower = stanza.toLowerCase();
+    let score = 0;
+    const hits = [];
+
+    loveSignals.forEach(sig => {
+      if (lower.includes(sig)) {
+        score += 2;
+        hits.push(sig);
+      }
+    });
+
+    verbHits.forEach(v => {
+      if (loveVerbs.includes(v.root)) {
+        score += 2;
+        hits.push(v.token);
+      }
+    });
+
+    if (semantic.ngoro?.length) score += 1;
+    if (semantic.thayũ?.length) score += 1;
+
+    if (score > 0) {
+      results.push({
+        stanza: index + 1,
+        score,
+        signals: hits,
+        text: stanza
+      });
+    }
+  });
+
+  return results;
+}
+
+function detectSpiritContext(text, tokens, verbHits, semantic) {
+  const stanzas = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  const results = [];
+
+  const spiritSignals = ["roho", "roho mũtheru", "mũroho", "ũroho", "mwaki", "heho"];
+  const spiritVerbs = ["hoya", "heana", "honokio"];
+
+  stanzas.forEach((stanza, index) => {
+    const lower = stanza.toLowerCase();
+    let score = 0;
+    const hits = [];
+
+    spiritSignals.forEach(sig => {
+      if (lower.includes(sig)) {
+        score += 3;
+        hits.push(sig);
+      }
+    });
+
+    verbHits.forEach(v => {
+      if (spiritVerbs.includes(v.root) && lower.includes("roho")) {
+        score += 3;
+        hits.push(v.token + " + roho");
+      }
+    });
+
+    if (semantic.ũtheru?.length) score += 1;
+
+    if (score > 0) {
+      results.push({
+        stanza: index + 1,
+        score,
+        signals: hits,
+        text: stanza
+      });
+    }
+  });
+
+  return results;
+}
+
+function detectNgomaContext(text, tokens, verbHits, semantic) {
+  const stanzas = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  const results = [];
+
+  const ngomaSignals = ["ngoma", "ngoma ya ngai", "ngoma ya roho", "ngoma ya thahu"];
+
+  stanzas.forEach((stanza, index) => {
+    const lower = stanza.toLowerCase();
+    let score = 0;
+    const hits = [];
+
+    ngomaSignals.forEach(sig => {
+      if (lower.includes(sig)) {
+        score += 3;
+        hits.push(sig);
+      }
+    });
+
+    if (lower.includes("ngoma") && lower.includes("roho")) {
+      score += 2;
+      hits.push("ngoma + roho");
+    }
+
+    if (lower.includes("ngoma") && lower.includes("thahu")) {
+      score += 2;
+      hits.push("ngoma + thahu");
+    }
+
+    if (score > 0) {
+      results.push({
+        stanza: index + 1,
+        score,
+        signals: hits,
+        text: stanza
+      });
+    }
+  });
+
+  return results;
+}
+
+function buildTheologicalProfile(analysis) {
+  const profile = {
+    dominant_modes: [],
+    spiritual_dynamics: [],
+    relational_dynamics: [],
+    justice_dynamics: [],
+    summary: ""
+  };
+
+  const modeCounts = {};
+  for (const mode in analysis.action_modes) {
+    const count = analysis.action_modes[mode]?.length || 0;
+    if (count > 0) modeCounts[mode] = count;
+  }
+
+  profile.dominant_modes = Object.keys(modeCounts);
+
+  if (analysis.spirit_context?.length)
+    profile.spiritual_dynamics.push("Spirit presence / sanctification");
+
+  if (analysis.ngoma_context?.length)
+    profile.spiritual_dynamics.push("Ngoma dynamics");
+
+  if (analysis.love_context?.length)
+    profile.relational_dynamics.push("Relational movement (ngoro, unity, peace)");
+
+  if (analysis.semantic?.kĩhoto?.length)
+    profile.justice_dynamics.push("Justice / right‑order");
+
+  if (analysis.semantic?.ũhoro?.length)
+    profile.justice_dynamics.push("Truth‑speech");
+
+  profile.summary = [
+    profile.dominant_modes.length ? `Dominant modes: ${profile.dominant_modes.join(", ")}` : "",
+    profile.spiritual_dynamics.length ? `Spiritual: ${profile.spiritual_dynamics.join("; ")}` : "",
+    profile.relational_dynamics.length ? `Relational: ${profile.relational_dynamics.join("; ")}` : "",
+    profile.justice_dynamics.length ? `Justice: ${profile.justice_dynamics.join("; ")}` : ""
+  ].filter(Boolean).join(". ");
+
+  return profile;
+}
+
+
+
+// ---------- TYPE DETECTION ----------
+function detectType(entry) {
+  if (typeof entry === "string") return "string";
+  if (entry.type === "method") return "method";
+  if (entry.type === "template") return "template";
+  if (entry.type === "worked_example") return "worked_example";
+  if (entry.type) return entry.type;
+  if (entry.content) return "hymn";
+  return "object";
+}
+
+// ---------- RENDERERS ----------
+function renderHymn(entry) {
+  return `
+    <details class="panel" open>
+      <summary>${entry.title}</summary>
+      <div class="panel-content">
+        <pre>${entry.content}</pre>
+      </div>
+    </details>
+  `;
+}
+
+function renderProverbSideBySide(key) {
+  const p = data.proverbs[key];
+  if (!p) return "<p>No proverb found.</p>";
+
+  const sources = p.sources || {};
+  const rows = Object.keys(sources).map(src => {
+    const entries = sources[src].map(e => `
+      <div class="panel">
+        <div class="panel-content">
+          <strong>Text:</strong> ${e.text || "(none)"}<br>
+          <strong>Notes:</strong> ${e.notes || ""}<br>
+          <strong>Confidence:</strong> ${e.confidence || "unknown"}
+        </div>
+      </div>
+    `).join("");
+
+    return `
+      <div>
+        <h4>${src}</h4>
+        ${entries}
+      </div>
+    `;
+  }).join("<hr>");
+
+  const ver = p.verification || {};
+  const merged = p.merged || {};
+
+  return `
+    <h3>${p.symbol || key}</h3>
+    <p><strong>Confidence:</strong> ${ver.confidence || "unknown"}</p>
+    <p><strong>Triangulated:</strong> ${ver.triangulated ? "yes" : "no"}</p>
+    <p><strong>Community confirmed:</strong> ${ver.community_confirmed ? "yes" : "no"}</p>
+
+    <h4>Merged Reading</h4>
+    <pre>${JSON.stringify(merged, null, 2)}</pre>
+
+    <h4>Sources</h4>
+    ${rows || "<p>No sources yet.</p>"}
+  `;
+}
+
+
+function renderMethod(entry) {
+  let html = `
+    <details class="panel" open>
+      <summary>${entry.title}</summary>
+      <div class="panel-content">
+        <ol>
+  `;
+  entry.steps.forEach(step => { html += `<li>${step}</li>`; });
+  html += `
+        </ol>
+        <p><em>${entry.notes || ""}</em></p>
+      </div>
+    </details>
+  `;
+  return html;
+}
+
+function renderTemplate(entry) {
+  let html = `
+    <details class="panel" open>
+      <summary>${entry.title}</summary>
+      <div class="panel-content">
+  `;
+  for (const section in entry.sections) {
+    html += `<h3>${section}</h3><pre>${JSON.stringify(entry.sections[section], null, 2)}</pre>`;
+  }
+  html += `<p><em>${entry.notes || ""}</em></p></div></details>`;
+  return html;
+}
+
+function renderWorkedExample(entry) {
+  let html = `
+    <details class="panel" open>
+      <summary>Worked Example: Hymn ${entry.hymn_number}</summary>
+      <div class="panel-content">
+  `;
+  for (const section in entry.sections) {
+    html += `<h3>${section}</h3><pre>${JSON.stringify(entry.sections[section], null, 2)}</pre>`;
+  }
+  html += `</div></details>`;
+  return html;
+}
+
+function renderObject(entry) {
+  return `<pre>${JSON.stringify(entry, null, 2)}</pre>`;
+}
+
+function renderEntry(entry) {
+  const type = detectType(entry);
+  switch (type) {
+    case "hymn": return renderHymn(entry);
+    case "method": return renderMethod(entry);
+    case "template": return renderTemplate(entry);
+    case "worked_example": return renderWorkedExample(entry);
+    default: return renderObject(entry);
+  }
+}
+
+function detectColonialMetaphors(text) {
+  const lower = text.toLowerCase();
+  return data.colonial_metaphors.filter(m => lower.includes(m));
+}
+
+function detectBiblicalAllusions(text) {
+  const lower = text.toLowerCase();
+  return data.biblical_allusions.filter(a => lower.includes(a));
+}
+
+function detectIndigenousIdioms(text) {
+  const lower = text.toLowerCase();
+  return data.indigenous_idioms.filter(idiom =>
+    lower.includes(idiom.toLowerCase())
+  );
+}
+
+
+function renderImportedTerms(result) {
+  return `
+    <h4>Biblical</h4> ${result.biblical.join(", ") || "(none)"}<hr>
+    <h4>Colonial</h4> ${result.colonial.join(", ") || "(none)"}<hr>
+    <h4>Swahili</h4> ${result.swahili.join(", ") || "(none)"}<hr>
+    <h4>English</h4> ${result.english.join(", ") || "(none)"}<hr>
+    <h4>Missionary</h4> ${result.missionary.join(", ") || "(none)"}
+  `;
+}
+
+function renderSemanticFields(result) {
+  return `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+}
+
+
+function renderVerificationDashboard() {
+  const container = document.getElementById("verificationList");
+  const items = Object.entries(data.proverbs).map(([key, p]) => {
+    const ver = p.verification || {};
+    return `
+      <div>
+        <strong>${p.symbol || key}</strong><br>
+        Confidence: ${ver.confidence || "unknown"}<br>
+        Sources: ${(ver.matched_sources || []).join(", ") || "none"}
+      </div>
+    `;
+  });
+
+  container.innerHTML = items.join("<hr>") || "<p>No proverbs yet.</p>";
+}
+
+// ---------- WORKED EXAMPLE GENERATOR (FULL UPDATED VERSION) ----------
+function generateWorkedExampleFromText(text, title, number, template, data) {
+  const analysis = analyseHymnLike(text, data);
+  const output = JSON.parse(JSON.stringify(template));
+
+  // -------------------------
+  // 1. METADATA
+  // -------------------------
+  output.sections["1. Metadata"].date = new Date().toISOString().slice(0, 10);
+  output.sections["1. Metadata"].hymn_number = number || "";
+  output.sections["1. Metadata"].title_gikuyu = title || "";
+  output.sections["1. Metadata"].title_english = analysis.title_english || "";
+  output.sections["1. Metadata"].analysis_version = "2.0 — Verb‑Aware + Contextual Theology Engine";
+
+  // -------------------------
+  // 2. CONTEXTUAL FRAME (unchanged, user fills manually)
+  // -------------------------
+
+  // -------------------------
+  // 3. TEXT BLOCK
+  // -------------------------
+  output.sections["3. Text Block"].original_gikuyu = text || "";
+  output.sections["3. Text Block"].literal_translation = "(TODO: literal translation)";
+  output.sections["3. Text Block"].natural_translation = "(TODO: natural translation)";
+  output.sections["3. Text Block"].blended_translation = "(TODO: blended translation)";
+
+  // -------------------------
+  // 4. THEOLOGICAL NOTES (unchanged, user fills manually)
+  // -------------------------
+
+  // -------------------------
+  // 5. ANTI‑COLONIAL READING
+  // -------------------------
+  output.sections["5. Anti-Colonial Reading"].inversions =
+    Object.keys(analysis.proverbs || {}).map(k => {
+      const p = analysis.proverbs[k];
+      return `${k.replace(/_/g, " ")} — ${p.akurinu || "(no Akurinu reading yet)"}`;
+    }).join("\n");
+
+  // survival_theology & political_silence remain user‑editable
+
+  // -------------------------
+  // 6. GUTAURA FUNCTION (unchanged)
+  // -------------------------
+
+  // -------------------------
+  // 7. VOCABULARY INDEX
+  // -------------------------
+  output.sections["7. Vocabulary Index"].key_terms =
+    Object.keys(analysis.vocab || {}).map(k => {
+      const v = analysis.vocab[k];
+      return `${k} — ${v.literal || ""} (${v.cosmological || ""})`;
+    });
+
+  // -------------------------
+  // 8. IMPORTED VOCABULARY
+  // -------------------------
+  output.sections["8. Imported Vocabulary"] = {
+    biblical: analysis.imports?.biblical || [],
+    colonial: analysis.imports?.colonial || [],
+    swahili: analysis.imports?.swahili || [],
+    english: analysis.imports?.english || [],
+    missionary: analysis.imports?.missionary || []
+  };
+
+  // -------------------------
+  // 9. COLONIAL METAPHORS
+  // -------------------------
+  output.sections["9. Colonial Metaphors"] =
+    analysis.colonial_metaphors || [];
+
+  // -------------------------
+  // 10. BIBLICAL ALLUSIONS
+  // -------------------------
+  output.sections["10. Biblical Allusions"] =
+    analysis.biblical_allusions || [];
+
+  // -------------------------
+  // 11. INDIGENOUS IDIOMS
+  // -------------------------
+  output.sections["11. Indigenous Idioms"] =
+    analysis.idioms || [];
+
+  // -------------------------
+  // 12. SEMANTIC FIELDS
+  // -------------------------
+  output.sections["12. Semantic Fields"] =
+    analysis.semantic || {};
+
+  // -------------------------
+  // 13. VERB PATTERNS
+  // -------------------------
+  output.sections["13. Verb Patterns"] =
+    (analysis.verbs || []).map(v =>
+      `${v.token} → stem: ${v.stem}, root: ${v.root}`
+    );
+
+  // -------------------------
+  // 14. ACTION MODES
+  // -------------------------
+  output.sections["14. Action Modes"] = analysis.action_modes || {};
+
+  // -------------------------
+  // 15. LOVE / RELATIONAL MOVEMENT
+  // -------------------------
+  output.sections["15. Love / Relational Movement"] =
+    analysis.love_context || [];
+
+  // -------------------------
+  // 16. SPIRIT PRESENCE
+  // -------------------------
+  output.sections["16. Spirit Presence"] =
+    analysis.spirit_context || [];
+
+  // -------------------------
+  // 17. NGOMA / SPIRITUAL DYNAMICS
+  // -------------------------
+  output.sections["17. Ngoma / Spiritual Dynamics"] =
+    analysis.ngoma_context || [];
+
+  // -------------------------
+  // 18. THEOLOGICAL PROFILE
+  // -------------------------
+  output.sections["18. Theological Profile"] =
+    analysis.theological_profile || {};
+
+  // -------------------------
+  // 19. GUTAURA SUPPORT
+  // -------------------------
+  output.sections["19. GUTAURA Support"] =
+    analysis.gutaura_support || {};
+
+  return output;
+}
+
+
+function generateWorkedExampleForHymn(hymnKey) {
+  const hymn = data[hymnKey];
+  const template = data["worked_example_template"];
+  if (!hymn || hymn.type !== "hymn") return null;
+  return generateWorkedExampleFromText(hymn.content, hymn.title, hymn.number, template, data);
+}
+
+// ---------- VOCAB UI ----------
+function renderVocabList() {
+  const container = document.getElementById("vocabList");
+  if (!data.vocab) {
+    container.textContent = "(no vocab yet)";
+    return;
+  }
+  const keys = Object.keys(data.vocab).sort();
+  if (!keys.length) {
+    container.textContent = "(no vocab yet)";
+    return;
+  }
+  container.innerHTML = keys.map(k => `<span class="pill">${k}</span>`).join(" ");
+}
+
+function addOrUpdateVocabFromUI() {
+  const w = document.getElementById("vWord").value.trim();
+  const lit = document.getElementById("vLiteral").value.trim();
+  const cos = document.getElementById("vCosmo").value.trim();
+  const notes = document.getElementById("vNotes").value.trim();
+
+  if (!w) {
+    alert("Please enter a word.");
+    return;
+  }
+  if (!data.vocab) data.vocab = {};
+  if (!data.vocab[w]) data.vocab[w] = {};
+  if (lit) data.vocab[w].literal = lit;
+  if (cos) data.vocab[w].cosmological = cos;
+  if (notes) data.vocab[w].notes = notes;
+
+  renderVocabList();
+}
+
+document.getElementById("importVocab").addEventListener("click", () => {
+  const fileInput = document.getElementById("vocabCSV");
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Choose a CSV file first.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.split(/\r?\n/).filter(Boolean);
+    // expect header: word,literal,cosmological,notes
+    lines.slice(1).forEach(line => {
+      const [word, literal, cosmo, notes] = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(s =>
+        s.replace(/^"|"$/g, "").trim()
+      );
+      if (!word) return;
+      if (!data.vocab) data.vocab = {};
+      if (!data.vocab[word]) data.vocab[word] = {};
+      if (literal) data.vocab[word].literal = literal;
+      if (cosmo) data.vocab[word].cosmological = cosmo;
+      if (notes) data.vocab[word].notes = notes;
+    });
+    renderVocabList();
+    alert("Vocab imported.");
+  };
+  reader.readAsText(file);
+});
+
+
+//  ---------- SEARCH ----------
+function searchHymns(query) {
+  const q = query.toLowerCase();
+
+  let expanded = expandGikuyuEquivalents(q);
+  expanded = expanded.concat(expandRoots(q));
+  expanded = expanded.concat(expandSemantic(q));
+  expanded = expanded.concat(expandIdioms(q));
+
+  const results = [];
+  for (const key in data) {
+    const item = data[key];
+    if (item && item.type === "hymn" && item.content) {
+      const content = item.content.toLowerCase();
+      if (expanded.some(eq => content.includes(eq))) {
+        results.push({
+          key,
+          title: item.title,
+          snippet: item.content.slice(0, 120) + "…"
+        });
+      }
+    }
+  }
+  return results;
+}
+
+// ---- EXPORT & DOWNLOAD UTILITIES----
+
+// Convert HTML panels into clean text
+function extractTextFromHTML(html) {
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+  return temp.innerText.trim();
+}
+
+document.getElementById("copyOutput").addEventListener("click", () => {
+  const text = buildExportText();
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Export copied to clipboard.");
+  });
+});
+
+document.getElementById("emailOutput").addEventListener("click", () => {
+  const text = buildExportText();
+  const subject = encodeURIComponent("Akurinu Hymn Analysis Export");
+  const body = encodeURIComponent(text);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+});
+
+document.getElementById("downloadMD").addEventListener("click", () => {
+  const text = buildExportText();
+  const blob = new Blob([text], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `nyimbo_export_${getTimestamp().replace(/[: ]/g, "_")}.md`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("downloadJSON").addEventListener("click", () => {
+  const html = document.getElementById("exampleOutput").innerHTML;
+  const text = extractTextFromHTML(html);
+
+  const exportObj = {
+    timestamp: getTimestamp(),
+    comment: document.getElementById("exportComment").value.trim(),
+    analysis_text: text
+  };
+
+  const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `nyimbo_export_${getTimestamp().replace(/[: ]/g, "_")}.json`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("downloadCSV").addEventListener("click", () => {
+  const vocab = data.vocab || {};
+  let csv = "word,literal,cosmological,notes\n";
+
+  for (const w in vocab) {
+    const v = vocab[w];
+    csv += `"${w}","${v.literal || ""}","${v.cosmological || ""}","${v.notes || ""}"\n`;
+  }
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `vocab_${getTimestamp().replace(/[: ]/g, "_")}.csv`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("downloadState").addEventListener("click", () => {
+  const html = document.getElementById("exampleOutput").innerHTML;
+  const text = extractTextFromHTML(html);
+
+  const state = {
+    timestamp: getTimestamp(),
+    comment: document.getElementById("exportComment").value.trim(),
+    data,                     // vocab + proverbs + hymns + templates
+    last_analysis_text: text  // whatever is currently shown
+  };
+
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `nyimbo_state_${getTimestamp().replace(/[: ]/g, "_")}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ---------- UI WIRING ----------
+const selectEl = document.getElementById("exampleSelect");
+const outputEl = document.getElementById("exampleOutput");
+
+document.getElementById("showItem").addEventListener("click", () => {
+  const key = selectEl.value;
+  const entry = data[key];
+  outputEl.innerHTML = entry ? renderEntry(entry) : "<p>No entry found.</p>";
+});
+
+// initial render
+outputEl.innerHTML = renderEntry(data[selectEl.value]);
+renderVocabList();
+
+document.getElementById("generateExample").addEventListener("click", () => {
+  const key = selectEl.value;
+  const example = generateWorkedExampleForHymn(key);
+  if (!example) {
+    outputEl.innerHTML = "<p>Select a hymn to generate a worked example.</p>";
+    return;
+  }
+  outputEl.innerHTML = renderWorkedExample(example);
+});
+
+document.getElementById("analyseCustom").addEventListener("click", () => {
+  const text = document.getElementById("customText").value;
+  if (!text.trim()) {
+    alert("Paste some text first.");
+    return;
+  }
+  const analysis = analyseHymnLike(text, data);
+  outputEl.innerHTML = renderObject(analysis);
+});
+
+document.getElementById("generateCustomExample").addEventListener("click", () => {
+  const text = document.getElementById("customText").value;
+  if (!text.trim()) {
+    alert("Paste some text first.");
+    return;
+  }
+  const template = data["worked_example_template"];
+  const example = generateWorkedExampleFromText(text, "Custom Text", "Custom", template, data);
+  outputEl.innerHTML = renderWorkedExample(example);
+});
+
+document.getElementById("addVocab").addEventListener("click", addOrUpdateVocabFromUI);
+
+document.getElementById("importHymn").addEventListener("click", importHymnHandler);
+
+document.getElementById("importProverbs")
+  .addEventListener("click", importProverbsHandler);
+
+document.getElementById("checkImportedTerms").addEventListener("click", () => {
+  const text = document.getElementById("importedCheckText").value;
+  const tokens = tokenize(text);
+  const result = detectImportedTerms(tokens, data);
+  document.getElementById("importedTermsOutput").innerHTML = renderImportedTerms(result);
+});
+
+document.getElementById("runTriangulation").addEventListener("click", () => {
+  triangulateAllProverbs();
+  renderVerificationDashboard();
+});
+
+document.getElementById("runSemanticField").addEventListener("click", () => {
+  const text = document.getElementById("semanticFieldInput").value;
+  const tokens = tokenize(text);
+  const result = classifySemanticFields(tokens, data);
+  document.getElementById("semanticFieldOutput").innerHTML =
+    renderSemanticFields(result);
+});
+
+
+document.getElementById("searchHymns").addEventListener("input", e => {
+  const q = e.target.value.trim();
+  const container = document.getElementById("searchResults");
+  if (!q) {
+    container.innerHTML = "";
+    return;
+  }
+  const results = searchHymns(q);
+  if (!results.length) {
+    container.innerHTML = "No matches.";
+    return;
+  }
+  container.innerHTML = results.map(r =>
+    `<div><strong>${r.title}</strong> <span class="pill">${r.key}</span><br>${r.snippet}</div>`
+  ).join("<hr>");
+});
+
+document.getElementById("showProverb").addEventListener("click", () => {
+  const keyRaw = document.getElementById("proverbKeyInput").value.trim();
+  if (!keyRaw) {
+    alert("Enter a proverb key.");
+    return;
+  }
+  const key = keyRaw.replace(/\s+/g, "_").toLowerCase();
+  document.getElementById("proverbView").innerHTML = renderProverbSideBySide(key);
+});
+
+// ---------- GĨKŨYŨ KEYBOARD INPUT HANDLER ----------
+let activeInput = null;
+
+// Track which input is active
+document.querySelectorAll("input[type=text], textarea").forEach(el => {
+  el.addEventListener("focus", () => activeInput = el);
+});
+
+// Insert Gĩkũyũ characters when keyboard buttons are clicked
+const kb = document.getElementById("gikuyuKeyboard");
+if (kb) {
+  kb.addEventListener("click", e => {
+    if (!activeInput) return;
+    if (!e.target.dataset.char) return;
+
+    const char = e.target.dataset.char;
+    const start = activeInput.selectionStart;
+    const end = activeInput.selectionEnd;
+
+    activeInput.value =
+      activeInput.value.slice(0, start) +
+      char +
+      activeInput.value.slice(end);
+
+    activeInput.selectionStart = activeInput.selectionEnd = start + char.length;
+    activeInput.focus();
+  });
+}
+// ----------END OF UI ----------
+
+// ---------- PWA SETUP with Manifest and Serviceworker----------
+(function setupPWA() {
+
+  // ✅ manifest
+  const manifest = {
+    name: "Akurinu Hymn Automaton",
+    short_name: "nyimbo",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#faf7f2",
+    theme_color: "#f0e7da"
+  };
+
+  const blob = new Blob([JSON.stringify(manifest)], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("link");
+  link.rel = "manifest";
+  link.href = url;
+
+  document.head.appendChild(link); // ✅ attach FIRST
+
+  // ✅ THEN service worker
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("✅ SW registered"))
+      .catch(err => console.error("❌ SW failed:", err));
+  }
+
+})();
+
+function buildExportText() {
+  const html = document.getElementById("exampleOutput").innerHTML;
+  const text = extractTextFromHTML(html);
+  const comment = document.getElementById("exportComment").value.trim();
+  const timestamp = getTimestamp();
+
+  let out = `Akurinu Hymn Automaton Export\n`;
+  out += `Timestamp: ${timestamp}\n\n`;
+
+  if (comment) {
+    out += `Comment:\n${comment}\n\n`;
+  }
+
+  out += `Analysis:\n${text}\n`;
+
+  return out;
+}
+
+function triangulateProverb(key) {
+  const p = data.proverbs[key];
+  if (!p) return;
+
+  const srcNames = Object.keys(p.sources || {});
+  const ver = p.verification || (p.verification = {});
+
+  ver.matched_sources = srcNames;
+
+  if (srcNames.length >= 3) ver.confidence = "high";
+  else if (srcNames.length === 2) ver.confidence = "medium";
+  else if (srcNames.length === 1) ver.confidence = "low";
+  else ver.confidence = "unknown";
+
+  ver.triangulated = srcNames.length >= 2;
+}
+
+function triangulateAllProverbs() {
+  for (const key in data.proverbs) {
+    triangulateProverb(key);
+  }
+}
+
+// ---------- LOCAL STORAGE AUTOSAVE ----------
+function autosave() {
+  const state = {
+    data: {
+      vocab: data.vocab,
+      proverbs: data.proverbs,
+      // hymns
+      ...Object.fromEntries(
+        Object.entries(data).filter(([k,v]) => v && v.type === "hymn")
+      )
+    },
+    customText: document.getElementById("customText").value,
+    comment: document.getElementById("exportComment").value
+  };
+
+  localStorage.setItem("nyimbo_state", JSON.stringify(state));
+}
+
+// autosave every 3 seconds
+setInterval(autosave, 3000);
+
+// ---------- AUTO-CLOSE OTHER SECTIONS ----------
+document.querySelectorAll("details.section").forEach(sec => {
+  sec.addEventListener("toggle", () => {
+    if (sec.open) {
+      document.querySelectorAll("details.section").forEach(other => {
+        if (other !== sec) other.open = false;
+      });
+    }
+  });
+});
+
+
+
+</script>
+
+</body>
+</html>

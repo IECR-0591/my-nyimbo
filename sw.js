@@ -1,8 +1,7 @@
-const CACHE_NAME = "nyimbo-pwa-v1";
-
+const CACHE_NAME = "nyimbo-cache-v1";
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache =>
+    caches.open("nyimbo-cache").then(cache =>
       cache.addAll(["./"])
     )
   );
